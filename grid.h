@@ -10,10 +10,7 @@ struct grid {
     // populates the game grid with just zeros
     void init() {
         for (int i = 0; i < height; i++) {
-            vector<int> row;
-            for (int j = 0; j < width; j++) {
-                row.push_back(0);
-            }
+            vector<int> row(width, 0);
             data.push_back(row);
         }
     }
