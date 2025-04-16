@@ -6,8 +6,20 @@ int main(int argc, char *argv[]) {
     grid game_area;
     game_area.width = 10;
     game_area.height = 7;
-    game_area.init();
+    game_area.init(10);
     game_area.display();
-    return 0;
+    while (true) {
+        string input;
+        char rida;
+        char veerg;
 
+        cout << "Rida:";
+        cin >> rida;
+        cout << "Veerg:";
+        cin >> veerg;
+        game_area.lokaator(rida, veerg);
+        if (input == "exit") {
+            return 0;
+        }
+    }
 }
