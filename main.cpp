@@ -1,6 +1,6 @@
 using namespace std;
-#include "grid.h";
-#include <iostream>;
+#include "grid.h"
+#include <iostream>
 
 int main(int argc, char *argv[]) {
     grid game_area;
