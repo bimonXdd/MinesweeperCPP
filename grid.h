@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <random>
 using namespace std;
 #ifndef GRID_H
 #define GRID_H
@@ -10,6 +11,7 @@ struct cell {
     bool hidden{true};
     bool bomb{false};
 };
+
 struct grid {
     int width, height;
     vector<vector<cell>> data;
@@ -54,22 +56,33 @@ struct grid {
                     break;
                 }
                 //TODO pommid suvalisemalt ja et loopib niikaua kuni pomme on piisavalt.
-                srand(time(0)+j);
-                int rng = rand()%101;
-                cout<<rng<<"\n";
 
-                if (rng < 40) {
+                if (suvaline_arv()) {
                     currentBombCount++;
                     row.at(j).bomb = true;
+                }
+                if (j == row.size() -1 && bombCount != 10) {
+                    j = 0;
                 }
             }
         }
     }
 
+    // Genereerib suvalise arvu vahemikus 1- 100 ning kui arv on alla 20ne siis returnib true
+    bool suvaline_arv() {
+        std::random_device seed_gen;
+        std::mt19937 generator(seed_gen());
+        std::uniform_int_distribution<> distribution(1, 100);
+        int number = distribution(generator);
+        if (number < 20){
+            return true;
+        }
+        return false;
+    }
+
     /*
     * Prints the current grid
     */
-
     void display() {
         char tahed[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
         cout << "  A B C D E F G H I J" << endl;
@@ -79,7 +92,7 @@ struct grid {
                 cout <<  data.at(i).at(j).bomb;
                 if (data[i][j].hidden && data[i][j].bomb) {
                     cout << "$ ";
-                } else if (data[i][j].hidden) {                 //hidden
+                } else if (data[i][j].hidden) {
                     cout << "# ";
                 }
                 else{cout << data[i][j].value << " ";}
@@ -88,20 +101,25 @@ struct grid {
         }
     }
 
-    vector<int> lokaator(char &rida, char &veerg) {
-        char tahed[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-        vector<int> selected(2);
-        for (int i = 0; i < 10; i++) {
-            if (rida == tahed[i]) {
-                selected.insert(selected.begin(), i);
+        vector<int> lokaator(char &rida, char &veerg) {
+            char tahed[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+            vector<int> selected(2);
+            int rea_nr = 0, veeru_nr = 0;
+            for (int i = 0; i < 10; i++) {
+                //G  = 6 ja D = 4
+                if (rida == tahed[i]) {
+                    rea_nr = i;
+                }
+                if (veerg == tahed[i]) {
+                    veeru_nr = i;
+                }
             }
-            if (veerg == tahed[i]) {
-                selected.insert(selected.begin()+1, i);
-            }
+            selected.insert(selected.begin(),rea_nr);
+            selected.insert(selected.begin() + 1, veeru_nr);
+
+            cout << selected[0] << ' ' << selected[1] << endl;
+            return selected;
         }
-        cout << selected[0] << ' ' << selected[1] << endl;
-        return selected;
-    }
-};
+    };
 
 #endif //GRID_H
