@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <random>
 using namespace std;
 #ifndef GRID_H
 #define GRID_H
@@ -10,10 +11,39 @@ struct cell {
     bool hidden{true};
     bool bomb{false};
 };
+
 struct grid {
     int width, height;
     vector<vector<cell>> data;
     // populates the game grid with just zeros
+    void reveal(vector<int> location) {
+        int x = location[0]; // -up / +down
+        int y = location[1]; // -left / +right
+        //selection inside grid check
+        if (x >= 0 && x < data.size() && y >= 0 && y < data[x].size()) {
+            data[x][y].hidden = false;
+        } else {
+            cout << "Please select a cell inside the grid!" << endl;
+            return;
+        }
+        if (y-1 > 0) {              //left of grid check
+            data[x][y-1].hidden = false; //left
+        }
+        if (y+1 < data[x].size()) {
+            data[x][y+1].hidden = false; //right
+        }
+        if (x+1 < data.size()) {                //bottom of grid check
+            data[x+1][y].hidden = false; //down
+            data[x+1][y+1].hidden = false; //down right
+            data[x+1][y-1].hidden = false; //down left
+        }
+        if (x-1 >= 0) {                         //top of grid check
+            data[x-1][y].hidden = false; //up
+            data[x-1][y+1].hidden = false; //up right
+            data[x-1][y-1].hidden = false; //up left
+        }
+    }
+
     void init(int bombCount) {
         int currentBombCount{0};
         for (int i = 0; i < height; i++) {
@@ -26,16 +56,28 @@ struct grid {
                     break;
                 }
                 //TODO pommid suvalisemalt ja et loopib niikaua kuni pomme on piisavalt.
-                srand(time(0)+j);
-                int rng = rand()%101;
-                cout<<rng<<"\n";
 
-                if (rng < 20) {
+                if (suvaline_arv()) {
                     currentBombCount++;
                     row.at(j).bomb = true;
                 }
+                if (j == row.size() -1 && bombCount != 10) {
+                    j = 0;
+                }
             }
         }
+    }
+
+    // Genereerib suvalise arvu vahemikus 1- 100 ning kui arv on alla 20ne siis returnib true
+    bool suvaline_arv() {
+        std::random_device seed_gen;
+        std::mt19937 generator(seed_gen());
+        std::uniform_int_distribution<> distribution(1, 100);
+        int number = distribution(generator);
+        if (number < 20){
+            return true;
+        }
+        return false;
     }
 
     /*
@@ -59,20 +101,25 @@ struct grid {
         }
     }
 
-    vector<int> lokaator(char &rida, char &veerg) {
-        char tahed[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-        vector<int> selected(2);
-        for (int i = 0; i < 10; i++) {
-            if (rida == tahed[i]) {
-                selected.insert(selected.begin(), i);
+        vector<int> lokaator(char &rida, char &veerg) {
+            char tahed[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+            vector<int> selected(2);
+            int rea_nr = 0, veeru_nr = 0;
+            for (int i = 0; i < 10; i++) {
+                //G  = 6 ja D = 4
+                if (rida == tahed[i]) {
+                    rea_nr = i;
+                }
+                if (veerg == tahed[i]) {
+                    veeru_nr = i;
+                }
             }
-            if (veerg == tahed[i]) {
-                selected.insert(selected.begin()+1, i);
-            }
+            selected.insert(selected.begin(),rea_nr);
+            selected.insert(selected.begin() + 1, veeru_nr);
+
+            cout << selected[0] << ' ' << selected[1] << endl;
+            return selected;
         }
-        cout << selected[0] << ' ' << selected[1] << endl;
-        return selected;
-    }
-};
+    };
 
 #endif //GRID_H

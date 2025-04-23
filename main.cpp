@@ -1,6 +1,6 @@
 using namespace std;
-#include "grid.h";
-#include <iostream>;
+#include "grid.h"
+#include <iostream>
 
 int main(int argc, char *argv[]) {
     grid game_area;
@@ -17,7 +17,9 @@ int main(int argc, char *argv[]) {
         cin >> rida;
         cout << "Veerg:";
         cin >> veerg;
-        game_area.lokaator(rida, veerg);
+        vector<int>selected_location = game_area.lokaator(rida, veerg);
+        game_area.reveal(selected_location);
+        game_area.display();
         if (input == "exit") {
             return 0;
         }
