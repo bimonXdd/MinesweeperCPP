@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
     game_area.init(10);
     game_area.number_bombs();
     game_area.display();
+
     while (true) {
         string input;
 

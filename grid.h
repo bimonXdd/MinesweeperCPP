@@ -12,61 +12,65 @@ struct cell {
     bool flag{false};
 };
 
+    //TODO Kui mängija vajutab ruudule kus on number siis ei tohiks ühtegi ümbritsevat ruutu avaneda (vähemalt netis mängides oli nii).
+    //TODO mängu võidu lõpp teha nt kui hidden ruute on sama palju kui pomme siis on võit.
+    //TODO esimese korraga on võimalik miini otsa astuda
+    //TODO Mängu lõppedes ei avane kogu väljak
+
 struct grid {
     int width, height;
     vector<vector<cell>> data;
     bool reveal_all = false; //If game ends shows all bombs
+    int hidden;
+
     // populates the game grid with just zeros
     void reveal(vector<int>& location) {
-        int x = location[0]; // -up / +down
-        int y = location[1]; // -left / +right
-        //selection inside grid check
-        if (x >= 0 && x < data.size() && y >= 0 && y < data[x].size()) {
-            data[x][y].hidden = false;
-        } else {
+        int x = location[0];
+        int y = location[1];
+
+        // Kas positsioon on kaardil sees?
+        if (x < 0 || x >= data.size() || y < 0 || y >= data[x].size()) {
             cout << "Valitud ala ei ole olemas!" << endl;
             return;
         }
 
-        cell& right_from_selected = data[x][y+1];
-        cell& left_from_selected = data[x][y-1];
-        cell& down_from_selected = data[x+1][y];
-        cell& up_from_selected = data[x-1][y];
-        cell& up_right_from_selected = data[x-1][y+1];
-        cell& up_left_from_selected = data[x-1][y-1];
-        cell& down_right_from_selected = data[x+1][y+1];
-        cell& down_left_from_selected = data[x+1][y-1];
+        cell& current = data[x][y];
 
-        if (y-1 > 0) {              //left of grid check
-            if (!left_from_selected.mine) left_from_selected.hidden = false;
+        // Ära ava juba avatud ruutu uuesti
+        if (!current.hidden) return;
+
+        current.hidden = false;
+
+        // Kui on numberruut, siis ära levita edasi
+        if (current.value > 0 || current.mine) return;
+
+        // Suunad: 8 suunda (x, y) ümber
+        const vector<pair<int, int>> directions = {
+            {-1, -1}, {-1, 0}, {-1, 1}, // ülemine rida
+            {0, -1},{0, 1},                    // vasak ja parem
+            {1, -1},  {1, 0}, {1, 1}    //alumine rida
+        };
+
+        for (auto [dx, dy] : directions) {
+            int nx = x + dx;
+            int ny = y + dy;
+
+            // Kontrolli, et naaber asub sees
+            if (nx >= 0 && nx < data.size() &&
+                ny >= 0 && ny < data[nx].size()) {
+
+                cell& neighbor = data[nx][ny];
+
+                // Kui pole miin ja peidus
+                if (!neighbor.mine && neighbor.hidden) {
+                    if (neighbor.value == 0) {
+                        vector<int> next = {nx, ny};
+                        reveal(next); // rekursioon
+                    }
+                    neighbor.hidden = false;
+                }
+                }
         }
-        if (y+1 < data[x].size()) {
-            if (!right_from_selected.mine) right_from_selected.hidden = false; //right
-        }
-        if (x+1 < data.size()) {                //bottom of grid check
-            if (!down_from_selected.mine) down_from_selected.hidden = false; //down
-
-            //so tiles wouldn't be revealed between mines also numbers
-            if (!(down_from_selected.mine && down_right_from_selected.mine)) {
-                if (!down_right_from_selected.mine) down_right_from_selected.hidden = false; //down right
-            }
-            if (!(down_from_selected.mine && down_left_from_selected.mine)) {
-                if (!down_left_from_selected.mine) down_left_from_selected.hidden = false; //down left
-            }
-        }
-        if (x-1 >= 0) {                         //top of grid check
-            if (!up_from_selected.mine) up_from_selected.hidden = false; //up
-
-            //so tiles wouldn't be revealed between mines
-            if (!(up_from_selected.mine && right_from_selected.mine)) {
-                if (!up_right_from_selected.mine) up_right_from_selected.hidden = false; //up right
-            }
-            if (!(up_from_selected.mine && left_from_selected.mine)) {
-                if (!up_left_from_selected.mine) up_left_from_selected.hidden = false; //up left
-            }
-        }
-
-
     }
 
     /**
@@ -75,7 +79,7 @@ struct grid {
      * @param y
      */
     void populate_bomb_area(int x, int y) {
-        if (y-1 > 0) {              //left of grid check
+        if (y-1 > 0) {            //left of grid check
             data[x][y-1].value++; //left
         }
         if (y+1 < data[x].size()) {
@@ -83,13 +87,21 @@ struct grid {
         }
         if (x+1 < data.size()) {                //bottom of grid check
             data[x+1][y].value++; //down
-            data[x+1][y+1].value++; //down right
-            data[x+1][y-1].value++; //down left
+            if (y + 1 < data[x + 1].size()) {
+                data[x + 1][y + 1].value++;// down left
+            }
+            if (y - 1 >= 0) {
+                data[x + 1][y - 1].value++;// down right
+            }
         }
         if (x-1 >= 0) {                         //top of grid check
             data[x-1][y].value++; //up
-            data[x-1][y+1].value++; //up right
-            data[x-1][y-1].value++; //up left
+            if (y + 1 < data[x - 1].size()) {
+                data[x - 1][y + 1].value++;// up left
+            }
+            if (y - 1 >= 0) {
+                data[x - 1][y - 1].value++; // up right
+            }
         }
     }
 
@@ -110,7 +122,7 @@ struct grid {
     void init(int bombCount) {
         int currentBombCount{0};
         for (int i = 0; i < height; i++) {
-            vector<cell> row(width, cell(0));
+            vector<cell> row(width);
             data.push_back(row);
         }
         for (vector<cell>& row : data) {
