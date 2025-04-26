@@ -1,10 +1,11 @@
-using namespace std;
 #include "grid.h"
+#include "grid.cpp"
 #include <iostream>
+using namespace std;
 
 int main(int argc, char *argv[]) {
     cout << "------ Minesweeper --" << endl;
-    cout << "Et m2ng v6ita, leia k6ik miinid ja ava suurem osa kaardist!" << endl;
+    cout << "Et m2ng v6ita, leia k6ik miinid ja ava terve osa kaardist!" << endl;
     cout << endl;
     grid game_area;
     game_area.width = 10;
@@ -16,10 +17,15 @@ int main(int argc, char *argv[]) {
     while (true) {
         string input;
 
-        cout << "Vali tegevus: 1-Avasta, 2-M2rgi/eemalda miin, 3-Lahku m2ngust: ";
+        cout << "Vali tegevus(number 1,2 v6i 3)" << endl;
+        cout << " 1-Avasta, 2-M2rgi/eemalda miin, 3-Lahku m2ngust: ";
         cin >> input;
-
+        if (input != "1" && input != "2" && input != "3") {
+            cout << "Palun sisestage tegevuse arv." << endl;
+            continue;
+        }
         if (input == "3") {
+            cout << "Kena p2eva!" << endl;
             return 0;
         }
         char rida;
@@ -28,7 +34,7 @@ int main(int argc, char *argv[]) {
         cin >> rida;
         cout << "Veerg(t2ht):";
         cin >> veerg;
-        vector<int>selected_location = game_area.lokaator(rida, veerg);
+        vector<int>selected_location = game_area.locator(rida, veerg);
 
         //avastamine
         if (input == "1") {
@@ -46,6 +52,11 @@ int main(int argc, char *argv[]) {
         if (input == "2") {
             game_area.plantAFlag(selected_location[0], selected_location[1]);
             game_area.display();
+        }
+
+        if (game_area.gameWon()) {
+            cout << "V6itsid!, tubli :) " << endl;
+            return 0;
         }
     }
 }
