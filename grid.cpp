@@ -96,6 +96,9 @@ void grid::number_bombs() {
         for (int y = 0; y < data[x].size(); y++) {
             if (data[x][y].mine) {
                 this->populate_bomb_area(x, y);
+                if (data[x][y].giga_mine) {             //giga_mines show up as 2 mines on one tile but work the same.
+                    this->populate_bomb_area(x, y);
+                }
             }
         }
     }
@@ -119,6 +122,9 @@ void grid::init(int bombCount) {
             if (random_number()) {
                 currentBombCount++;
                 row.at(j).mine = true;
+                if (random_number()) {
+                    row.at(j).giga_mine = true;
+                }
             }
 
             if (j == row.size() -1 && bombCount != 10) {
