@@ -1,7 +1,9 @@
-#include <vector>
-using namespace std;
 #ifndef GRID_H
 #define GRID_H
+
+#pragma once
+#include <vector>
+using namespace std;
 
 struct cell {
     int value;
