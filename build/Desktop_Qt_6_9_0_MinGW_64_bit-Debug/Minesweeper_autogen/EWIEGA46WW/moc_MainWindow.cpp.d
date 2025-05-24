@@ -1,5 +1,5 @@
-C:/Users/Jaagup/Desktop/MinesweeperCPP/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/Minesweeper_autogen/EWIEGA46WW/moc_MainWindow.cpp: C:/Users/Jaagup/Desktop/MinesweeperCPP/MainWindow.h \
-  C:/Users/Jaagup/Desktop/MinesweeperCPP/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/Minesweeper_autogen/moc_predefs.h \
+C:/Users/Ragne/Desktop/MinesweeperCPP/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/Minesweeper_autogen/EWIEGA46WW/moc_MainWindow.cpp: C:/Users/Ragne/Desktop/MinesweeperCPP/MainWindow.h \
+  C:/Users/Ragne/Desktop/MinesweeperCPP/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/Minesweeper_autogen/moc_predefs.h \
   C:/Qt/6.9.0/mingw_64/include/QtCore/QTimer \
   C:/Qt/6.9.0/mingw_64/include/QtCore/QVector \
   C:/Qt/6.9.0/mingw_64/include/QtCore/q17memory.h \
@@ -382,4 +382,4 @@ C:/Users/Jaagup/Desktop/MinesweeperCPP/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/time.h \
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/vadefs.h \
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h \
-  C:/Users/Jaagup/Desktop/MinesweeperCPP/grid.h
+  C:/Users/Ragne/Desktop/MinesweeperCPP/grid.h

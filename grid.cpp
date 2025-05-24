@@ -2,6 +2,8 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <QDebug>
+
 using namespace std;
 
 /**
@@ -65,12 +67,12 @@ void grid::populate_bomb_area(int x, int y) {
     if (y-1 >= 0) {            //left of grid check
         data[x][y-1].value++; //left
     }
-    if (y+1 < data[x].size()) {
+    if (y+1 <= data[x].size()) {
         data[x][y+1].value++; //right
     }
-    if (x+1 < data.size()) {                //bottom of grid check
+    if (x+1 <= data.size()) {                //bottom of grid check
         data[x+1][y].value++; //down
-        if (y + 1 < data[x + 1].size()) {
+        if (y + 1 <= data[x + 1].size()) {
             data[x + 1][y + 1].value++;// down left
         }
         if (y - 1 >= 0) {
@@ -220,17 +222,14 @@ void grid::plantAFlag(int x, int y) {
  * @return boolean
  */
 bool grid::gameWon() {
+    bool victory{true};
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (data[i][j].hidden) { // Kõik ruudud peavad avatud olema et võita (mis ei ole miinid), ehk kui leidub peidus olevaid numbri ruute, siis kohe false
-                if (!data[i][j].mine) {
-                    return false;
-                }
-            }
-            if (data[i][j].mine && !data[i][j].flag) { // miin ja pole märgitud, siis ei ole võitnud veel
-                return false;
+            //qDebug() << "CELL: (" << i << ", "<< j << ")" << " is: " << data[i][j].mine << data[i][j].hidden << !data[i][j].flag;
+            if (data[i][j].mine && data[i][j].hidden && !data[i][j].flag) { // Peidus oleval miinil pole lippu
+                victory = false;
             }
         }
     }
-    return true;
+    return victory;
 }

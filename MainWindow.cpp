@@ -96,7 +96,7 @@ void MainWindow::handleButtonClick(int x, int y) {
     }
 
     if (gameGrid.gameWon()) {
-        gameTimer->stop();  //
+        gameTimer->stop();
         QMessageBox::information(this, "Võit", "Tubli! Sa võitsid mängu!");
     }
 }
@@ -117,10 +117,10 @@ void MainWindow::updateUI() {
 
                         QString color;
                         switch (c.value) {
-                            case 1:  color = "#00cc00"; break;
+                            case 1:  color = "blue"; break;
                             case 2:  color = "green"; break;
-                            case 3:  color = "#66cc00"; break;
-                            case 4:  color = "#99cc00"; break;
+                            case 3:  color = "#8b2323"; break;
+                            case 4:  color = "black"; break;
                             case 5:  color = "gold"; break;
                             case 6:  color = "#ffcc00"; break;
                             case 7:  color = "orange"; break;
