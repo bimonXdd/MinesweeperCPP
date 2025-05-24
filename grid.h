@@ -1,12 +1,15 @@
-#include <vector>
-using namespace std;
 #ifndef GRID_H
 #define GRID_H
+
+#pragma once
+#include <vector>
+using namespace std;
 
 struct cell {
     int value;
     bool hidden{true};
     bool mine{false};
+    bool giga_mine{false};  //Like 2 regular mines on top of each other. Meant to disorient and confuse the player.
     bool flag{false};
 };
 
